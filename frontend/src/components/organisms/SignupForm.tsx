@@ -1,0 +1,172 @@
+import React from "react";
+import { View, StyleSheet, Pressable } from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { InputField } from "../molecules/InputField";
+import { Button, Text } from "../atoms";
+import { useSignup } from "@/features/auth/hooks";
+import {
+  signupSchema,
+  SignupFormData,
+} from "@/features/auth/schemas/auth.schemas";
+import { colors } from "@/theme";
+
+interface SignupFormProps {
+  onNavigateToLogin: () => void;
+}
+
+export function SignupForm({ onNavigateToLogin }: SignupFormProps) {
+  const { signup, loading, error } = useSignup();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      name: "",
+      lastName: "",
+      username: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onSubmit = async (data: SignupFormData) => {
+    try {
+      await signup({
+        name: data.name.trim(),
+        lastName: data.lastName.trim(),
+        username: data.username.trim(),
+        password: data.password,
+      });
+    } catch {}
+  };
+
+  return (
+    <View style={styles.container}>
+      <Controller
+        control={control}
+        name="name"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <InputField
+            label="Nombre"
+            placeholder="Ingresa tu nombre"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            error={errors.name?.message}
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="lastName"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <InputField
+            label="Apellido"
+            placeholder="Ingresa tu apellido"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            error={errors.lastName?.message}
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="username"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <InputField
+            label="Usuario"
+            placeholder="Ingresa un nombre de usuario"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            autoCapitalize="none"
+            autoCorrect={false}
+            error={errors.username?.message}
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <InputField
+            label="Contraseña"
+            placeholder="Ingresa tu contraseña"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            secureTextEntry
+            error={errors.password?.message}
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="confirmPassword"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <InputField
+            label="Confirmar Contraseña"
+            placeholder="Confirma tu contraseña"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            secureTextEntry
+            error={errors.confirmPassword?.message}
+          />
+        )}
+      />
+
+      {error && (
+        <Text variant="error" style={styles.serverError}>
+          {error.message}
+        </Text>
+      )}
+
+      <Button
+        title="Crear Cuenta"
+        onPress={handleSubmit(onSubmit)}
+        loading={loading}
+        style={styles.button}
+      />
+
+      <Pressable onPress={onNavigateToLogin} style={styles.linkContainer}>
+        <Text variant="body" style={styles.linkText}>
+          ¿Ya tienes cuenta? <Text style={styles.link}>Inicia Sesión</Text>
+        </Text>
+      </Pressable>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+  },
+  button: {
+    marginTop: 8,
+  },
+  serverError: {
+    marginBottom: 12,
+    textAlign: "center",
+  },
+  linkContainer: {
+    marginTop: 24,
+    alignItems: "center",
+  },
+  linkText: {
+    color: colors.gray[500],
+  },
+  link: {
+    color: colors.primary[500],
+    fontWeight: "600",
+  },
+});

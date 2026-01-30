@@ -1,0 +1,164 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""Represents a bank account with balance and ownership info."""
+type Account {
+  """Unique identifier of the account."""
+  id: ID!
+
+  """The unique account number."""
+  accountNumber: String!
+
+  """ID of the user who owns this account."""
+  ownerId: String!
+
+  """Current available balance."""
+  balance: Float!
+
+  """Timestamp when the account was created."""
+  createdAt: DateTime!
+
+  """Timestamp when the account was last updated."""
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type AccountLookup {
+  id: ID!
+  accountNumber: String!
+  ownerName: String!
+}
+
+"""Represents a financial transaction (credit or debit)."""
+type TransactionTypeGraphQL {
+  """Unique identifier of the transaction."""
+  id: ID!
+
+  """Amount of the transaction."""
+  amount: Float!
+
+  """Type of transaction: CREDIT or DEBIT."""
+  type: TransactionType!
+
+  """ID of the account associated with this transaction."""
+  accountId: String!
+
+  """Optional description or note for the transaction."""
+  description: String
+
+  """Timestamp when the transaction occurred."""
+  createdAt: DateTime!
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+type BalanceSummary {
+  currentBalance: Float!
+  totalCredits: Float!
+  totalDebits: Float!
+  transactions: [TransactionTypeGraphQL!]!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+type PaginatedTransactions {
+  data: [TransactionTypeGraphQL!]!
+  total: Int!
+  pageInfo: PageInfo!
+}
+
+type TransferResult {
+  success: Boolean!
+  message: String!
+  debitTransaction: TransactionTypeGraphQL!
+  creditTransaction: TransactionTypeGraphQL!
+}
+
+type UserType {
+  id: ID!
+  username: String!
+}
+
+type AuthPayload {
+  accessToken: String!
+  user: UserType!
+}
+
+type Query {
+  hello: String!
+  accounts: [Account!]!
+  account(id: String!): Account!
+  lookupAccount(accountNumber: String!): AccountLookup
+  statement(accountId: String!, month: Int, year: Int): BalanceSummary!
+  transactions(input: GetTransactionsInput!): PaginatedTransactions!
+}
+
+input GetTransactionsInput {
+  accountId: String!
+  type: TransactionType
+  startDate: DateTime
+  endDate: DateTime
+  limit: Int! = 10
+  offset: Int! = 0
+}
+
+type Mutation {
+  login(input: LoginInput!): AuthPayload!
+  signup(input: SignUpInput!): AuthPayload!
+  createAccount: Account!
+  createTransaction(input: CreateTransactionInput!): TransactionTypeGraphQL!
+  transfer(input: TransferInput!): TransferResult!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
+input SignUpInput {
+  name: String!
+  lastName: String!
+  username: String!
+  password: String!
+}
+
+"""Input data to create a new transaction (Deposit or Withdrawal)."""
+input CreateTransactionInput {
+  """ID of the account performing the transaction."""
+  accountId: String!
+
+  """Amount to transmit. Must be positive."""
+  amount: Float!
+
+  """Type of transaction: CREDIT (Deposit) or DEBIT (Withdrawal)."""
+  type: TransactionType!
+
+  """Optional note describing the transaction."""
+  description: String
+}
+
+"""Input data to transfer funds between accounts."""
+input TransferInput {
+  """ID of the source account."""
+  fromAccountId: String!
+
+  """ID of the destination account."""
+  toAccountId: String!
+
+  """Amount to transfer. Must be positive."""
+  amount: Float!
+
+  """Optional note for the transfer."""
+  description: String
+}
