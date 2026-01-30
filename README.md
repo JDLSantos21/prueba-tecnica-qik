@@ -85,7 +85,7 @@ Si vas a probar la App en un celular real (no emulador), necesitas configurar la
     ```bash
     EXPO_PUBLIC_API_URL=http://TU_IP_LOCAL:3000/graphql
     ```
-4.  Reinicia Expo: `npx expo start`
+4.  Reinicia Expo: `npx expo start -c`
 
 ---
 
@@ -95,7 +95,7 @@ La calidad del código está garantizada por múltiples capas de pruebas.
 
 ### Backend (E2E & Concurrencia)
 
-Validamos flujos completos y la robustez ante condiciones de carrera (ej: 5 transferencias simultáneas).
+Se validan flujos completos y la robustez ante condiciones de carrera (ej: 5 transferencias simultáneas).
 
 ```bash
 cd backend
@@ -105,8 +105,7 @@ npm run test:e2e
 
 ### Frontend (Unit & Integration)
 
-`
-Validamos componentes visuales y lógica de formularios.
+Se validan componentes visuales y lógica de formularios.
 
 ```bash
 cd frontend
@@ -123,9 +122,9 @@ Una vez iniciado el backend, visita:
 
 El Playground incluye documentación interactiva de todos los `Queries` y `Mutations`.
 
-### 📝 Ejemplos (Copy & Paste)
+### Ejemplos
 
-Aquí tienes algunas operaciones comunes para probar rápidamente en el Playground:
+Aquí dejo algunas operaciones comunes para probar rápidamente en el Playground:
 
 #### 1. Crear Usuario
 
