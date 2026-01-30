@@ -28,6 +28,13 @@ Este repositorio contiene la solución a la prueba técnica para Qik Banco Digit
 
 ## Guía de Inicio
 
+### 0. Clonar el repositorio
+
+```bash
+git clone https://github.com/JDLSantos21/prueba-tecnica-qik.git
+cd prueba-tecnica-qik
+```
+
 ### Prerrequisitos
 
 - Docker & Docker Compose
@@ -78,7 +85,7 @@ Si vas a probar la App en un celular real (no emulador), necesitas configurar la
     ```bash
     EXPO_PUBLIC_API_URL=http://TU_IP_LOCAL:3000/graphql
     ```
-4.  Reinicia Expo: `npx expo start -c`
+4.  Reinicia Expo: `npx expo start`
 
 ---
 
